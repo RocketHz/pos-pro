@@ -95,8 +95,8 @@ Si eres una IA ayudando en este proyecto, sigue estas reglas:
 🚀 Comandos Rápidos
 -------------------
 
-*   php artisan serveIniciar servidor.
+*   php artisan serve Iniciar servidor.
     
-*   php artisan migrate- Sincronizar base de datos.
+*   php artisan migrate - Sincronizar base de datos.
     
 *   npm run dev- Recursos del compilador de Vite.
