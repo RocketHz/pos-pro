@@ -24,15 +24,15 @@ _El objetivo es que los productos y mesas no desaparezcan al recargar la página
 
 1.  **Modelos y Migraciones:**
     
-    *   \[ \] Crear modelo Product (nombre, precio, categoría, stock, imagen/emoji).
+    *   [x] Crear modelo Product (nombre, precio, categoría, stock, imagen/emoji).
         
-    *   \[ \] Crear modelo Table (número, estado: libre/ocupada, capacidad).
+    *   [x] Crear modelo Table (número, estado: libre/ocupada, capacidad).
         
-    *   \[ \] Crear modelo Order y OrderItem (para guardar las ventas).
+    *   [x] Crear modelo Order y OrderItem (para guardar las ventas).
         
 2.  **API interna:**
     
-    *   \[ \] Crear controladores para que el JavaScript de la vista pueda hacer fetch() a los productos reales de la base de datos en lugar de usar el array AppState.data.products estático.
+    *   [x] Crear controladores para que el JavaScript de la vista pueda hacer fetch() a los productos reales de la base de datos (`/api/products`).
         
 
 ### Fase 2: Lógica del Punto de Venta (POS)
@@ -41,13 +41,13 @@ _Hacer que el botón "Cobrar" guarde la venta real._
 
 1.  **Sincronización de Carrito:**
     
-    *   \[ \] Conectar el módulo POSModule.js con un endpoint de Laravel para registrar transacciones.
+    *   [ ] Conectar el módulo POSModule.js con un endpoint de Laravel para registrar transacciones.
         
-    *   \[ \] Implementar la actualización de stock automática en Postgres cuando se confirme una venta.
+    *   [ ] Implementar la actualización de stock automática en Postgres cuando se confirme una venta.
         
 2.  **Gestión de Mesas:**
     
-    *   \[ \] Vincular el estado de las mesas en la interfaz con la base de datos para que varios dispositivos vean la misma mesa ocupada.
+    *   [ ] Vincular el estado de las mesas en la interfaz con la base de datos para que varios dispositivos vean la misma mesa ocupada.
         
 
 ### Fase 3: Módulo de Inventario y Cupones
@@ -56,13 +56,13 @@ _Permitir al administrador gestionar el negocio._
 
 1.  **CRUD de Productos:**
     
-    *   \[ \] Crear formularios funcionales para "Nuevo Producto" que guarden datos en Postgres.
+    *   [ ] Crear formularios funcionales para "Nuevo Producto" que guarden datos en Postgres.
         
-    *   \[ \] Implementar la carga de imágenes o selección de iconos.
+    *   [ ] Implementar la carga de imágenes o selección de iconos.
         
 2.  **Sistema de Cupones:**
     
-    *   \[ \] Validar los cupones desde el servidor para evitar que un cliente edite el código JS y se asigne descuentos falsos.
+    *   [ ] Validar los cupones desde el servidor para evitar que un cliente edite el código JS y se asigne descuentos falsos.
         
 
 ### Fase 4: Reportes Reales
@@ -71,11 +71,11 @@ _Transformar los gráficos de Chart.js en datos verdaderos._
 
 1.  **Consultas de Agregación:**
     
-    *   \[ \] Crear lógica en el controlador de Reportes para sumar ventas por día, mes y productos más vendidos mediante SQL.
+    *   [ ] Crear lógica en el controlador de Reportes para sumar ventas por día, mes y productos más vendidos mediante SQL.
         
 2.  **Impresión de Tickets:**
     
-    *   \[ \] Formatear la vista del modal de recibo para que sea compatible con impresoras térmicas (80mm).
+    *   [ ] Formatear la vista del modal de recibo para que sea compatible con impresoras térmicas (80mm).
         
 
 🛠️ Instrucciones para el Agente de IA
@@ -100,3 +100,33 @@ Si eres una IA ayudando en este proyecto, sigue estas reglas:
 *   php artisan migrate - Sincronizar base de datos.
     
 *   npm run dev- Recursos del compilador de Vite.
+
+🧾 Auditoría / Estado actual recogido
+------------------------------------
+
+- ✅ Fase 1 completa:
+  - Modelos `Product`, `Table`, `Order`, `OrderItem` + migraciones creadas.
+  - API de lectura `GET /api/products` y lógica AppState inyectada en `resources/js/state.js`.
+- ⚠️ Fase 2 parcial / pendiente:
+  - No existe endpoint `POST /api/orders` (no hay controller de orden, no hay persistencia de ventas desde UI).
+  - No hay flujo `cobrar`/guardar, ni stock decrementado al confirmar compra.
+  - Mesas tienen modelo y migración, pero no se sincroniza con la UI.
+- ⚠️ Fase 3 pendiente:
+  - UI de inventario y cupones en plantilla existe (HTML/estilos) pero no hay endpoints CRUD en backend.
+  - Sistema de cupones no implementado en backend.
+- ⚠️ Fase 4 pendiente:
+  - Gráficos en dashboard de Chart.js son estáticos actualmente (no hay controlador de reportes con agregaciones).
+  - Modal de ticket presente, no hay ruta de impresión térmica real.
+
+✅ Rutas y mecanismos que hay que crear primero:
+1. `GET /api/tables`, `PATCH /api/tables/{id}` -> estado de mesas.
+2. `POST /api/orders`, `GET /api/orders`, `GET /api/orders/{id}` -> ventas.
+3. `POST /api/coupons/validate` -> validación segura de cupón.
+4. `admin/products` CRUD via API (opcional con Livewire o APIs REST).
+
+💡 Siguientes pasos recomendados
+------------------------------
+- Crear un `OrderController`, `CouponController` y `TableController` con Request validation y tests.
+- Implementar `resources/js/orders.js` o extender `AppState` para enviar carrito a `POST /api/orders` (incluye CSRF token).
+- Agregar eventos de UI para manejar `btn-checkout`, `pos-category-filter`, `pos-search`, `btn-apply-coupon` y estado de mesas.
+- Agregar tests Feature para cada fase (integración orders/coupons/reports).

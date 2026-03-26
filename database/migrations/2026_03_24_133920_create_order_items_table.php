@@ -10,23 +10,22 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('products', function (Blueprint $table) {
+{
+    Schema::create('order_items', function (Blueprint $table) {
         $table->id();
-        $table->string('name');
-        $table->decimal('price', 8, 2);
-        $table->string('category');
-        $table->integer('stock');
-        $table->string('image'); // Para el emoji o ruta de imagen
+        $table->foreignId('order_id')->constrained()->onDelete('cascade');
+        $table->foreignId('product_id')->constrained();
+        $table->integer('quantity');
+        $table->decimal('price', 10, 2); // Precio al momento de la venta (por si cambia después)
         $table->timestamps();
-});
-    }
+    });
+}
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('order_items');
     }
 };
