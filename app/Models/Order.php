@@ -12,6 +12,11 @@ class Order extends Model
         'table_id',
         'user_id',
         'total',
+        'discount',
+        'tip',
+        'payment_method',
+        'payment_reference',
+        'payment_details',
         'status'
     ];
 
